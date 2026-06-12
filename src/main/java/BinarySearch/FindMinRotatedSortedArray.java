@@ -1,4 +1,4 @@
-package ArraysAndHashing;
+package BinarySearch;
 
 /**
  * Program to find the Minimum Element in a Rotated Sorted Array.
