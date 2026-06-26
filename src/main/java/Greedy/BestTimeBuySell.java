@@ -1,4 +1,4 @@
-package ArraysAndHashing;
+package Greedy;
 
 /**
  * Program to calculate the maximum profit from buying and selling stock
