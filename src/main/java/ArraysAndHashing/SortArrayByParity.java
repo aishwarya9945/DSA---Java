@@ -74,4 +74,13 @@ public class SortArrayByParity {
         }
         return result;
     }
+
+    // Main method for testing
+    public static void main(String[] args) {
+        SortArrayByParity solver = new SortArrayByParity();
+        int[] nums = {3, 1, 2, 4};
+
+        System.out.println("Optimal: " + Arrays.toString(solver.sortArrayByParityOptimal(nums.clone())));
+        System.out.println("Brute  : " + Arrays.toString(solver.sortArrayByParityBrute(nums.clone())));
+    }
 }

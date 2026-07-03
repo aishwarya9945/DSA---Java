@@ -67,6 +67,33 @@ public class MergeSortedArray {
             nums1[k--] = nums2[j--];
         }
     }
+    // or
+    class Solution {
+        public void merge(int[] nums1, int m, int[] nums2, int n) {
+
+            // i → last valid element in nums1
+            // j → last element in nums2
+            // k → last position in nums1 (total length m+n)
+            int i = m - 1;
+            int j = n - 1;
+            int k = m + n - 1;
+
+            // Merge from the back to avoid overwriting nums1's elements
+            while (j >= 0) {
+                // If nums1 still has elements and its current element is larger
+                if (i >= 0 && nums1[i] > nums2[j]) {
+                    nums1[k] = nums1[i]; // place nums1[i] at the end
+                    i--;                 // move pointer i left
+                } else {
+                    // Otherwise place nums2[j] at the end
+                    nums1[k] = nums2[j];
+                    j--;                 // move pointer j left
+                }
+                k--; // move the write pointer left
+            }
+        }
+    }
+
 
     /**
      * Algorithm 2: Brute Force Copy + Sort

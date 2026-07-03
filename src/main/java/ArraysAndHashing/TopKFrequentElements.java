@@ -46,26 +46,42 @@ public class TopKFrequentElements {
      *      - If heap size > k, pop smallest frequency.
      * 3. Extract elements from heap.
      *
+     * Mnemonic
+     * Think of it as “Count → Heap → Result”:
+     *
+     * Count → Use a HashMap to count frequencies.
+     * Hook: “Map counts numbers.”
+     *
+     * Heap → Use a min‑heap of size k to keep only the top k frequent.
+     * Hook: “Heap throws away extras.”
+     *
+     * Result → Drain heap into result array.
+     * Hook: “Poll heap, fill result.”
+     *
      * Time Complexity: O(n log k)
      * Space Complexity: O(n)
      * Concept: HashMap + Min-Heap.
      */
     public static int[] topKFrequentOptimal(int[] nums, int k) {
+        // Step 1: Count frequency of each number
         Map<Integer, Integer> freqMap = new HashMap<>();
         for (int num : nums) {
             freqMap.put(num, freqMap.getOrDefault(num, 0) + 1);
         }
 
+        // Step 2: MinHeap (smallest frequency at top)
+        // Keeps only k most frequent elements
         PriorityQueue<Map.Entry<Integer, Integer>> minHeap =
                 new PriorityQueue<>(Comparator.comparingInt(Map.Entry::getValue));
 
         for (Map.Entry<Integer, Integer> entry : freqMap.entrySet()) {
             minHeap.offer(entry);
             if (minHeap.size() > k) {
-                minHeap.poll();
+                minHeap.poll(); // remove least frequent
             }
         }
 
+        // Step 3: Build result array from heap
         int[] result = new int[k];
         int index = 0;
         while (!minHeap.isEmpty()) {
@@ -74,6 +90,7 @@ public class TopKFrequentElements {
 
         return result;
     }
+
 
     /**
      * Algorithm 2: Brute Force Sorting Approach

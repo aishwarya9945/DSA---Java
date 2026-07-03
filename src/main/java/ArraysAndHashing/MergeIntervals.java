@@ -33,41 +33,60 @@ public class MergeIntervals {
     }
 
     /**
-     * Algorithm 1: Optimal Sorting + Merge Approach
-     * ---------------------------------------------
-     * Idea:
-     * Sort intervals by start time. Then iterate and merge overlapping intervals.
+     * Merge Intervals - Optimal Approach - Sorting + Merge Approach
+     * ----------------------------------
+     * Mnemonic: "Sort → Sweep → Merge"
      *
      * Steps:
-     * 1. Sort intervals by start.
-     * 2. Initialize result list.
-     * 3. For each interval:
-     *      - If result is empty or current interval does not overlap with last → add it.
-     *      - Else → merge with last interval (update end).
-     * 4. Return result list as array.
+     * 1. Sort intervals by start time.
+     * 2. Initialize a 'current' interval.
+     * 3. For each next interval:
+     *      - If overlap (next.start <= current.end) → merge by updating current.end.
+     *      - Else → add current to result and reset current = next.
+     * 4. After loop, add the last current interval.
      *
-     * Time Complexity: O(n log n) (due to sorting)
-     * Space Complexity: O(n)
+     * Time Complexity: O(n log n) due to sorting
+     * Space Complexity: O(n) for result list
+
+     * Purpose
+     * If the input array intervals is empty (length == 0), there are no intervals to merge.
+     * Instead of continuing with sorting and accessing intervals[0]
+     (which would throw an ArrayIndexOutOfBoundsException), the method immediately returns an empty 2D array.
+
+     * 🔹 Why new int[0][]
+     * new int[0][] creates a 2D int array with zero rows.
+
+     * This matches the expected return type int[][].
+
+     * It’s the conventional way in Java to return “no intervals” while still respecting the method signature.
      */
     public static int[][] mergeOptimal(int[][] intervals) {
         if (intervals.length == 0) return new int[0][];
 
+        // Step 1: Sort by start time
         Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
-        List<int[]> result = new ArrayList<>();
 
-        int[] current = intervals[0];
+        List<int[]> result = new ArrayList<>();
+        int[] current = intervals[0]; // Step 2: initialize
+
+        // Step 3: Sweep through intervals
         for (int i = 1; i < intervals.length; i++) {
             if (intervals[i][0] <= current[1]) {
-                current[1] = Math.max(current[1], intervals[i][1]); // merge
+                // Overlap → merge
+                current[1] = Math.max(current[1], intervals[i][1]);
             } else {
+                // No overlap → add current and reset
                 result.add(current);
                 current = intervals[i];
             }
         }
+
+        // Step 4: Add the last interval
         result.add(current);
 
         return result.toArray(new int[result.size()][]);
     }
+
 
     /**
      * Algorithm 2: Brute Force Approach
