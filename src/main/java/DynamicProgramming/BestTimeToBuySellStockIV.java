@@ -52,43 +52,52 @@ public class BestTimeToBuySellStockIV {
      * Concept: DP with transaction states.
      */
     public int maxProfitOptimal(int k, int[] prices) {
-        int n = prices.length;
-        if (n == 0 || k == 0) return 0;
+                int n = prices.length;
+                if (n == 0 || k == 0) return 0;
 
-        // If k >= n/2, it's equivalent to unlimited transactions
-        if (k >= n / 2) {
-            int profit = 0;
-            for (int i = 1; i < n; i++) {
-                if (prices[i] > prices[i - 1]) {
-                    profit += prices[i] - prices[i - 1];
+                // Special case: if k >= n/2, it's equivalent to unlimited transactions
+                if (k >= n / 2) {
+                    int profit = 0;
+                    for (int i = 1; i < n; i++) {
+                        if (prices[i] > prices[i - 1]) {
+                            profit += prices[i] - prices[i - 1];
+                        }
+                    }
+                    return profit;
                 }
-            }
-            return profit;
-        }
 
-        int[][] dp = new int[k + 1][n];
-        for (int t = 1; t <= k; t++) {
-            int maxDiff = -prices[0];
-            for (int d = 1; d < n; d++) {
-                dp[t][d] = Math.max(dp[t][d - 1], prices[d] + maxDiff);
-                maxDiff = Math.max(maxDiff, dp[t - 1][d] - prices[d]);
-            }
-        }
-        return dp[k][n - 1];
-    }
+                // DP table: dp[t][d] = max profit with at most t transactions up to day d
+                int[][] dp = new int[k + 1][n];
 
-    /**
-     * Algorithm 2: Brute Force Approach
-     * ---------------------------------
-     * Idea:
-     * - Try all possible split points for transactions.
-     * - For each transaction count up to k, compute max profit by recursion.
-     * - Very inefficient for large n.
-     *
-     * Time Complexity: O(n^2 * k)
-     * Space Complexity: O(1)
-     * Concept: Recursive enumeration of transactions.
-     */
+                // Fill DP
+                for (int t = 1; t <= k; t++) {   // number of transactions
+                    int maxDiff = -prices[0];    // best balance of (dp[t-1][d] - prices[d])
+                    for (int d = 1; d < n; d++) { // days
+                        // Either skip today (dp[t][d-1]) or sell today (prices[d] + maxDiff)
+                        dp[t][d] = Math.max(dp[t][d - 1], prices[d] + maxDiff);
+
+                        // Update maxDiff: best previous profit minus today's price
+                        maxDiff = Math.max(maxDiff, dp[t - 1][d] - prices[d]);
+                    }
+                }
+
+                return dp[k][n - 1]; // max profit with k transactions up to last day
+            }
+
+
+
+        /**
+         * Algorithm 2: Brute Force Approach
+         * ---------------------------------
+         * Idea:
+         * - Try all possible split points for transactions.
+         * - For each transaction count up to k, compute max profit by recursion.
+         * - Very inefficient for large n.
+         *
+         * Time Complexity: O(n^2 * k)
+         * Space Complexity: O(1)
+         * Concept: Recursive enumeration of transactions.
+         */
     public int maxProfitBrute(int k, int[] prices) {
         return helper(prices, 0, k);
     }

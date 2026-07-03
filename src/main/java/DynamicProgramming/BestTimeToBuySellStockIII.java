@@ -52,22 +52,45 @@ public class BestTimeToBuySellStockIII {
      * - secondSell= max(secondSell, secondBuy + price)
      *
      * Answer = secondSell
-     *
+
+
+     * 🔹 How to Remember
+     * Think of it as four states:
+     * firstBuy → after buying first stock
+     * firstSell → after selling first stock
+     * secondBuy → after buying second stock
+     * secondSell → after selling second stock
+
+     * Transition logic:
+     * Buy → subtract price
+     * Sell → add price
+
+     * Always take the max between “do nothing” and “do action today.”
      * Time Complexity: O(n)
      * Space Complexity: O(1)
      * Concept: DP state compression.
      */
     public int maxProfitOptimal(int[] prices) {
+        // State variables
         int firstBuy = Integer.MIN_VALUE, firstSell = 0;
         int secondBuy = Integer.MIN_VALUE, secondSell = 0;
 
+        // Traverse each day's price
         for (int price : prices) {
+            // Buy first stock (spend money → negative)
             firstBuy = Math.max(firstBuy, -price);
+
+            // Sell first stock
             firstSell = Math.max(firstSell, firstBuy + price);
+
+            // Buy second stock (after selling first)
             secondBuy = Math.max(secondBuy, firstSell - price);
+
+            // Sell second stock
             secondSell = Math.max(secondSell, secondBuy + price);
         }
-        return secondSell;
+
+        return secondSell; // max profit after at most 2 transactions
     }
 
     /**
