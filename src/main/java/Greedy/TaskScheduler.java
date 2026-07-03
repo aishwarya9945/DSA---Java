@@ -55,17 +55,20 @@ public class TaskScheduler {
      * Concept: Greedy + Counting.
      */
     public int leastIntervalOptimal(char[] tasks, int n) {
+        // Step 1: Count frequencies
         int[] freq = new int[26];
         for (char c : tasks) freq[c - 'A']++;
 
+        // Step 2: Count how many tasks have maxFreq
         int maxFreq = 0;
-        for (int f : freq) maxFreq = Math.max(maxFreq, f);
+        for (int f : freq) maxFreq = Math.max(maxFreq, f); // update maxFreq
 
         int countMax = 0;
         for (int f : freq) {
             if (f == maxFreq) countMax++;
         }
 
+        // Step 3: Apply formula
         return Math.max(tasks.length, (maxFreq - 1) * (n + 1) + countMax);
     }
 
