@@ -31,57 +31,72 @@ import java.util.*;
 public class SplitArrayLargestSum {
 
     /**
-     * Algorithm 1: Optimal Binary Search + Greedy
-     * -------------------------------------------
+     * Algorithm: Optimal Binary Search + Greedy
+     * -----------------------------------------
      * Idea:
-     * - The answer lies between max(nums) and sum(nums).
+     * - The answer lies between:
+     *      low  = max(nums)   (at least one subarray must contain the largest element)
+     *      high = sum(nums)   (all elements in one subarray)
      * - Use binary search on this range.
-     * - For each mid, check if we can split into <= m subarrays
-     *   with largest sum <= mid using greedy.
+     * - For each mid, check feasibility:
+     *      Can we split into ≤ m subarrays with max sum ≤ mid?
+     *      → Greedy check: keep adding elements until sum > mid, then start new subarray.
      *
      * Steps:
      * 1. low = max(nums), high = sum(nums).
      * 2. While low < high:
-     *    - mid = (low + high)/2
-     *    - If feasible(mid) → high = mid
-     *    - Else → low = mid + 1
-     * 3. Return low.
+     *      mid = (low + high) / 2
+     *      If feasible(mid) → high = mid
+     *      Else → low = mid + 1
+     * 3. Return low (minimum largest subarray sum).
+     *
+     * Mnemonic:
+     * "Painter’s Partition Problem → Balance Load"
      *
      * Time Complexity: O(n log(sum(nums)))
      * Space Complexity: O(1)
-     * Concept: Binary Search on Answer + Greedy validation.
      */
-    public int splitArrayOptimal(int[] nums, int m) {
-        int max = 0, sum = 0;
+    public static int splitArrayOptimal(int[] nums, int k) {
+        int low = 0, high = 0;
         for (int num : nums) {
-            max = Math.max(max, num);
-            sum += num;
+            low = Math.max(low, num);  // largest element // this line finds max(nums)
+            high += num;               // total sum // this line computes sum(nums)
         }
 
-        int low = max, high = sum;
+        // So the max(nums) part is mentioned implicitly:
+        //low starts at 0.
+        //For each element, we update low = Math.max(low, num).
+        //After the loop, low holds the maximum element in the array.
+
         while (low < high) {
             int mid = low + (high - low) / 2;
-            if (canSplit(nums, m, mid)) {
-                high = mid;
+            if (canSplit(nums, k, mid)) {
+                high = mid;  // try smaller max sum
             } else {
-                low = mid + 1;
+                low = mid + 1;  // need larger max sum
             }
         }
         return low;
     }
 
-    private boolean canSplit(int[] nums, int m, int maxSumAllowed) {
-        int count = 1, currentSum = 0;
+    private static boolean canSplit(int[] nums, int k, int maxSum) {
+        int count = 1;        // start with 1 subarray (1 bucket)
+        int currentSum = 0;   // current bucket sum
+
         for (int num : nums) {
-            if (currentSum + num > maxSumAllowed) {
-                count++;
-                currentSum = num;
-                if (count > m) return false;
+            // If adding num exceeds allowed maxSum → start new subarray
+            if (currentSum + num > maxSum) {
+                count++;          // new bucket
+                currentSum = num; // reset sum to current element
+
+                // If we already need more than k subarrays → not feasible
+                if (count > k) return false;
             } else {
+                // Otherwise keep filling current bucket
                 currentSum += num;
             }
         }
-        return true;
+        return true; // feasible within k subarrays
     }
 
     /**
