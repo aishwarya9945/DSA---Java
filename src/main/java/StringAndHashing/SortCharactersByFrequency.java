@@ -38,30 +38,52 @@ public class SortCharactersByFrequency {
      * - Push entries into a MaxHeap sorted by frequency.
      * - Build result string by repeatedly appending characters.
      *
+     * Mnemonic for frequencySortOptimal
+     * Think of it as “Count → Heap → Build”:
+     *
+     * Count → Use a HashMap to count frequencies.
+     * Mnemonic: “Map counts characters.”
+     *
+     * Heap → Push entries into a MaxHeap sorted by frequency.
+     * Mnemonic: “Heap keeps most frequent on top.”
+     *
+     * Build → Pop from heap, append character freq times.
+     * Mnemonic: “Build string by draining heap.”
+     *
+     * So the mental flow is:
+     * Map → Heap → StringBuilder
+     *
      * Time Complexity: O(n log n)
      * Space Complexity: O(n)
      * Concept: Hashing + Priority Queue.
      */
     public String frequencySortOptimal(String s) {
+        // Step 1: Count frequency of each character
         Map<Character, Integer> freqMap = new HashMap<>();
         for (char c : s.toCharArray()) {
             freqMap.put(c, freqMap.getOrDefault(c, 0) + 1);
         }
 
+        // Step 2: MaxHeap to order characters by frequency (highest first)
         PriorityQueue<Map.Entry<Character, Integer>> maxHeap =
                 new PriorityQueue<>((a, b) -> b.getValue() - a.getValue());
 
         maxHeap.addAll(freqMap.entrySet());
 
+        // Step 3: Build result string by draining heap
         StringBuilder sb = new StringBuilder();
         while (!maxHeap.isEmpty()) {
             Map.Entry<Character, Integer> entry = maxHeap.poll();
+            // Append character 'freq' times
             for (int i = 0; i < entry.getValue(); i++) {
                 sb.append(entry.getKey());
             }
         }
+
+        // Step 4: Return final string
         return sb.toString();
     }
+
 
     /**
      * Algorithm 2: Brute Force Sorting

@@ -33,25 +33,47 @@ public class ValidAnagram {
      * - Subtract frequency using characters in t.
      * - If all counts return to zero → anagram.
      *
+     * Mnemonic
+     * Think of it as “Count → Cancel → Check”:
+     *
+     * Count → Count characters in s.
+     * Hook: “Fill the frequency bucket.”
+     *
+     * Cancel → Subtract counts using t.
+     * Hook: “Cancel out with second string.”
+     *
+     * Check → Verify all counts are zero.
+     * Hook: “If bucket empty → anagram.”
+     *
      * Time Complexity: O(n)
      * Space Complexity: O(1) (fixed array of size 26)
      * Concept: Hashing / Frequency array.
      */
     public boolean isAnagramOptimal(String s, String t) {
+        // Step 1: Quick check — lengths must match
         if (s.length() != t.length()) return false;
 
+        // Step 2: Frequency array for 26 lowercase letters
         int[] count = new int[26];
+
+        // Step 3: Count characters in s
         for (char c : s.toCharArray()) {
             count[c - 'a']++;
         }
+
+        // Step 4: Subtract counts using t
         for (char c : t.toCharArray()) {
             count[c - 'a']--;
         }
+
+        // Step 5: Verify all counts are zero
         for (int val : count) {
             if (val != 0) return false;
         }
-        return true;
+
+        return true; // All counts balanced → anagram
     }
+
 
     /**
      * Algorithm 2: Brute Force Sorting
