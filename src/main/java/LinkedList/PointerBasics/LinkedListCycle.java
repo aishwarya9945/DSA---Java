@@ -1,24 +1,7 @@
 package LinkedList.PointerBasics;
 
-/**
- * Program to detect if a singly linked list has a cycle.
- * Implements:
- * 1. Optimal Fast & Slow Pointer Approach (O(n), O(1))
- * 2. Brute Force HashSet Approach (O(n), O(n))
- *
- * Problem:
- * Given the head of a linked list, return true if there is a cycle in the list.
- * A cycle exists if some node’s next pointer points back to a previous node.
- *
- * Example:
- * Input  : 3 -> 2 -> 0 -> -4
- *                 ^         |
- *                 |_________|
- * Output : true
- *
- * Input  : 1 -> 2 -> null
- * Output : false
- */
+import java.util.HashSet;
+
 public class LinkedListCycle {
 
     static class ListNode {
@@ -27,29 +10,15 @@ public class LinkedListCycle {
         ListNode(int val) { this.val = val; }
     }
 
-    public static void main(String[] args) {
-        // Build sample list with cycle: 3 -> 2 -> 0 -> -4 -> (points back to 2)
-        ListNode head = new ListNode(3);
-        head.next = new ListNode(2);
-        head.next.next = new ListNode(0);
-        head.next.next.next = new ListNode(-4);
-        head.next.next.next.next = head.next; // cycle
-
-        // ---------- Optimal Approach ----------
-        boolean optimalResult = hasCycleOptimal(head);
-        System.out.println("Has Cycle (Optimal): " + optimalResult);
-
-        // ---------- Brute Force Approach ----------
-        boolean bruteResult = hasCycleBrute(head);
-        System.out.println("Has Cycle (Brute Force): " + bruteResult);
-    }
-
     /**
-     * Algorithm 1: Optimal Fast & Slow Pointer Approach
-     * -------------------------------------------------
+     * Optimal Approach: Fast & Slow Pointer (Floyd’s Cycle Detection)
+     * ---------------------------------------------------------------
+     * Mnemonic: "Runner catches walker → cycle."
+     *
      * Idea:
-     * Move slow pointer one step, fast pointer two steps.
-     * If they ever meet, there is a cycle.
+     * - Move slow pointer one step, fast pointer two steps.
+     * - If they ever meet, there is a cycle.
+     * - If fast reaches null, no cycle.
      *
      * Time Complexity: O(n)
      * Space Complexity: O(1)
@@ -75,17 +44,19 @@ public class LinkedListCycle {
     }
 
     /**
-     * Algorithm 2: Brute Force HashSet Approach
-     * -----------------------------------------
+     * Brute Force Approach: HashSet
+     * -----------------------------
+     * Mnemonic: "Seen before → cycle."
+     *
      * Idea:
-     * Store visited nodes in a HashSet.
-     * If a node is revisited, there is a cycle.
+     * - Store visited nodes in a HashSet.
+     * - If a node is revisited, there is a cycle.
      *
      * Time Complexity: O(n)
      * Space Complexity: O(n)
      */
     public static boolean hasCycleBrute(ListNode head) {
-        java.util.HashSet<ListNode> visited = new java.util.HashSet<>();
+        HashSet<ListNode> visited = new HashSet<>();
         ListNode curr = head;
         while (curr != null) {
             if (visited.contains(curr)) return true;
@@ -93,5 +64,32 @@ public class LinkedListCycle {
             curr = curr.next;
         }
         return false;
+    }
+
+    /**
+     * Main method for testing
+     */
+    public static void main(String[] args) {
+        // Build sample list with cycle: 3 -> 2 -> 0 -> -4 -> (points back to 2)
+        ListNode head = new ListNode(3);
+        head.next = new ListNode(2);
+        head.next.next = new ListNode(0);
+        head.next.next.next = new ListNode(-4);
+        head.next.next.next.next = head.next; // cycle
+
+        // ---------- Optimal Approach ----------
+        boolean optimalResult = hasCycleOptimal(head);
+        System.out.println("Has Cycle (Optimal): " + optimalResult);
+
+        // ---------- Brute Force Approach ----------
+        boolean bruteResult = hasCycleBrute(head);
+        System.out.println("Has Cycle (Brute Force): " + bruteResult);
+
+        // Build sample list without cycle: 1 -> 2 -> null
+        ListNode head2 = new ListNode(1);
+        head2.next = new ListNode(2);
+
+        System.out.println("Has Cycle (Optimal, no cycle): " + hasCycleOptimal(head2));
+        System.out.println("Has Cycle (Brute Force, no cycle): " + hasCycleBrute(head2));
     }
 }

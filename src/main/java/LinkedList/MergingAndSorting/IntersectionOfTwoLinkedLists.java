@@ -47,4 +47,51 @@ public class IntersectionOfTwoLinkedLists {
         // Either intersection node or null if no intersection
         return pA;
     }
+
+    /**
+     * Algorithm 1: Brute Force
+     * ------------------------
+     * Idea:
+     * - For each node in list A, traverse list B fully.
+     * - If any node matches (same reference), return intersection.
+     *
+     * Time Complexity: O(m * n)   (m = length of list A, n = length of list B)
+     * Space Complexity: O(1)      (no extra space)
+     */
+    public ListNode getIntersectionNodeBruteForce(ListNode headA, ListNode headB) {
+        for (ListNode a = headA; a != null; a = a.next) {
+            for (ListNode b = headB; b != null; b = b.next) {
+                if (a == b) return a; // intersection found
+            }
+        }
+        return null; // no intersection
+    }
+
+    /**
+     * Main method for testing
+     */
+    public static void main(String[] args) {
+        // Create sample linked lists with intersection
+        ListNode common = new ListNode(8);
+        common.next = new ListNode(10);
+
+        ListNode headA = new ListNode(3);
+        headA.next = new ListNode(7);
+        headA.next.next = common; // intersection at node 8
+
+        ListNode headB = new ListNode(99);
+        headB.next = new ListNode(1);
+        headB.next.next = common; // intersection at node 8
+
+        IntersectionOfTwoLinkedLists solver = new IntersectionOfTwoLinkedLists();
+
+        // Test brute force
+        ListNode result1 = solver.getIntersectionNodeBruteForce(headA, headB);
+        System.out.println("Brute Force Intersection: " + (result1 != null ? result1.val : "No Intersection"));
+
+        // Test optimal two pointers
+        ListNode result2 = solver.getIntersectionNode(headA, headB);
+        System.out.println("Two Pointers Intersection: " + (result2 != null ? result2.val : "No Intersection"));
+    }
 }
+

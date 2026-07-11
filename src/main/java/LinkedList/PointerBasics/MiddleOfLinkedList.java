@@ -9,13 +9,6 @@ package LinkedList.PointerBasics;
  * Problem:
  * Given the head of a singly linked list, return the middle node.
  * If there are two middle nodes, return the second middle node.
- *
- * Example:
- * Input  : 1 -> 2 -> 3 -> 4 -> 5
- * Output : 3
- *
- * Input  : 1 -> 2 -> 3 -> 4 -> 5 -> 6
- * Output : 4
  */
 public class MiddleOfLinkedList {
 
@@ -25,54 +18,37 @@ public class MiddleOfLinkedList {
         ListNode(int val) { this.val = val; }
     }
 
-    public static void main(String[] args) {
-        // Build sample list: 1 -> 2 -> 3 -> 4 -> 5 -> 6
-        ListNode head = new ListNode(1);
-        head.next = new ListNode(2);
-        head.next.next = new ListNode(3);
-        head.next.next.next = new ListNode(4);
-        head.next.next.next.next = new ListNode(5);
-        head.next.next.next.next.next = new ListNode(6);
-
-        // ---------- Optimal Approach ----------
-        ListNode optimalResult = middleNodeOptimal(head);
-        System.out.println("Middle Node (Optimal): " + optimalResult.val);
-
-        // ---------- Brute Force Approach ----------
-        ListNode bruteResult = middleNodeBrute(head);
-        System.out.println("Middle Node (Brute Force): " + bruteResult.val);
-    }
-
     /**
      * Algorithm 1: Optimal Fast & Slow Pointer Approach
      * -------------------------------------------------
-     * Idea:
-     * Move slow pointer one step at a time, fast pointer two steps.
-     * When fast reaches end, slow will be at middle.
-
-     * Why it’s easy to recall
-     * Slow pointer → “walks.”
-     * Fast pointer → “runs.”
+     * Mnemonic: "Runner finishes → Walker at middle."
      *
-     * When the runner finishes, the walker is at the middle.
-
+     * Idea:
+     * - Initialize two pointers: slow and fast at head.
+     * - Move slow one step, fast two steps.
+     * - When fast reaches end, slow will be at middle.
+     * - If even length, slow lands on the second middle (LeetCode requirement).
+     *
      * Time Complexity: O(n)
      * Space Complexity: O(1)
      */
     public static ListNode middleNodeOptimal(ListNode head) {
-        ListNode slow = head, fast = head; // Initialize two pointers: slow moves 1 step, fast moves 2 steps
-        while (fast != null && fast.next != null) { // Loop continues only if fast can safely move two steps ahead
-            slow = slow.next;
-            fast = fast.next.next;
+        ListNode slow = head, fast = head; // slow walks, fast runs
+        while (fast != null && fast.next != null) {
+            slow = slow.next;       // move 1 step
+            fast = fast.next.next;  // move 2 steps
         }
-        return slow; // Middle
+        return slow; // middle node
     }
 
     /**
      * Algorithm 2: Brute Force Two-Pass Approach
      * ------------------------------------------
+     * Mnemonic: "Count → Jump to mid."
+     *
      * Idea:
-     * First count total nodes. Then traverse again to the middle index.
+     * - First count total nodes.
+     * - Then traverse again to middle index (count/2).
      *
      * Time Complexity: O(n)
      * Space Complexity: O(1)
@@ -84,11 +60,57 @@ public class MiddleOfLinkedList {
             count++;
             curr = curr.next;
         }
-        int midIndex = count / 2;
+        int midIndex = count / 2; // second middle for even length
         curr = head;
         for (int i = 0; i < midIndex; i++) {
             curr = curr.next;
         }
         return curr;
+    }
+
+    /**
+     * Utility method to print list
+     */
+    public static void printList(ListNode head) {
+        ListNode curr = head;
+        while (curr != null) {
+            System.out.print(curr.val + (curr.next != null ? " -> " : ""));
+            curr = curr.next;
+        }
+        System.out.println();
+    }
+
+    /**
+     * Main method for testing
+     */
+    public static void main(String[] args) {
+        // Case 1: Even length list → 1->2->3->4->5->6
+        ListNode headEven = new ListNode(1);
+        headEven.next = new ListNode(2);
+        headEven.next.next = new ListNode(3);
+        headEven.next.next.next = new ListNode(4);
+        headEven.next.next.next.next = new ListNode(5);
+        headEven.next.next.next.next.next = new ListNode(6);
+
+        System.out.print("Even List: ");
+        printList(headEven);
+        ListNode optimalEven = middleNodeOptimal(headEven);
+        System.out.println("Middle Node (Optimal): " + (optimalEven != null ? optimalEven.val : "null"));
+        ListNode bruteEven = middleNodeBrute(headEven);
+        System.out.println("Middle Node (Brute): " + (bruteEven != null ? bruteEven.val : "null"));
+
+        // Case 2: Odd length list → 1->2->3->4->5
+        ListNode headOdd = new ListNode(1);
+        headOdd.next = new ListNode(2);
+        headOdd.next.next = new ListNode(3);
+        headOdd.next.next.next = new ListNode(4);
+        headOdd.next.next.next.next = new ListNode(5);
+
+        System.out.print("\nOdd List: ");
+        printList(headOdd);
+        ListNode optimalOdd = middleNodeOptimal(headOdd);
+        System.out.println("Middle Node (Optimal): " + (optimalOdd != null ? optimalOdd.val : "null"));
+        ListNode bruteOdd = middleNodeBrute(headOdd);
+        System.out.println("Middle Node (Brute): " + (bruteOdd != null ? bruteOdd.val : "null"));
     }
 }
